@@ -14,6 +14,8 @@ tabtex(
   note,
   note_width,
   note_label = TRUE,
+  headings,
+  blank_headings = TRUE,
   long_negatives = TRUE,
   numbered = TRUE,
   special_left = TRUE
@@ -36,7 +38,11 @@ tabtex(
 
 \item{note_width}{A character string that specifies the width of the note. By default, the note will be the same width as the table itself (specified with \code{width}).}
 
-\item{note_label}{A character string containing the label preceding the note. By default, "Note:" in italics (\textit{Note:}).}
+\item{note_label}{A logical value that specifies whether the table note should be preceded by "Note:" in italics, when applicable.}
+
+\item{headings}{A character vector that specifies the column headers for the table. When not specified, the data frame's column names will be used instead. When a named character vector, column headers will be the values of the vector whose names correspond to a column name in the original data frame. When a column from the data frame is not represented in the named character vector, the column header will be blank, unless \code{blank_headings} is changed to \code{FALSE}}
+
+\item{blank_headings}{A logical value dictating whether column headers can be empty. If \code{TRUE}, columns left unspecified by the character vector passed as \code{headings} are blank. If \code{FALSE}, unspecified column headers are filled using the original data frame's column names.}
 
 \item{long_negatives}{A logical value indicating whether negative signs preceding numbers in cells should be converted to mathematical negative signs ("$-$") in the LaTeX output.}
 
