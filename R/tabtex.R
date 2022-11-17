@@ -15,7 +15,6 @@
 #' @param numbered A logical value indicating whether the table should be numbered in LaTeX (if `TRUE`, uses the `table` environment; if `FALSE`, uses the `table*` environment instead).
 #' @param special_left A logical value indicating whether the leftmost column should be formatted separately from the other columns (`TRUE` by default).
 #'
-#' @return If no value for `out` is specified, returns the character string of the table in LaTeX form
 #' @export
 #'
 #' @examples
@@ -41,11 +40,11 @@
 
 tabtex <- function(.data, 
                    out,
-                   title = "Table's Title", 
-                   label = "tab:label",
+                   title = "", 
+                   label = "",
                    width = "0.8\\linewidth",
                    position = "!htbp",
-                   note = "This is a note",
+                   note = "",
                    note_width = "table",
                    note_label = "\\textit{Note:} ",
                    long_negatives = TRUE,
@@ -126,16 +125,16 @@ tabtex <- function(.data,
   
   # Replace local strings
   for (strName in names(localStrings)) {
-    table <- sub(paste0("$", strName), localStrings[strName], table, fixed = TRUE)
+    table <- gsub(paste0("$", strName), localStrings[strName], table, fixed = TRUE)
   }
   
   # Fix negative numbers
   if (long_negatives) {
-    table <- sub("-[^0-9]*", "$-$", table)
+    table <- gsub("-[^0-9]*", "$-$", table)
   }
   
   if (missing(out)) {
-    return(table)
+    print(table)
   } else {
     write(table, file = out)
   }
