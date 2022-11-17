@@ -1,0 +1,64 @@
+---
+title: "tabtex"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+## Overview
+
+## Installation
+
+```{r, eval = FALSE}
+# Install the most recent version of tabtex from GitHub:
+install.packages("devtools")
+devtools::install_github("nskelley/tabtex")
+```
+
+## Getting started
+
+Once it's installed, you can load tabtex with `library(tabtex)`.
+
+```{r, message = FALSE}
+library(tabtex)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+starwars_homeworlds <- starwars %>%
+  filter(!is.na(homeworld) & !is.na(species)) %>%
+  group_by(homeworld, species) %>%
+  summarise(spec_hw_freq = n()) %>%
+  group_by(homeworld) %>%
+  mutate(hw_freq = sum(spec_hw_freq)) %>%
+  filter(hw_freq >= 3) %>%
+  select(-hw_freq) %>%
+  pivot_wider(names_from = homeworld, values_from = spec_hw_freq) %>%
+  mutate(across(everything(), ~ ifelse(is.na(.x), 0, .x))) %>%
+  rename(Species = species)
+
+starwars_homeworlds
+```
+
+```{r}
+# this is a mess
+tabtex(starwars_homeworlds, title = "Species Frequencies by Homeworld", 
+       note = "Restricted to homeworlds with at least characters.")
+
+# but when saved...
+tabtex(starwars_homeworlds, title = "Species Frequencies by Homeworld", 
+       note = "Restricted to homeworlds with at least characters.",
+       out = "demo/out/starwars_homeworlds.tex")
+```
+
+We get this output from LaTeX:
+
+![image of starwars_homeworlds.tex output](demo/out/starwars_homeworld_table.png)
+
