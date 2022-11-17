@@ -7,15 +7,14 @@
 tabtex(
   .data,
   out,
-  title = "Table's Title",
-  label = "tab:label",
+  title,
+  label,
   width = "0.8\\\\linewidth",
   position = "!htbp",
-  note = "This is a note",
-  note_width = "table",
-  note_label = "\\\\textit{Note:} ",
+  note,
+  note_width,
+  note_label = TRUE,
   long_negatives = TRUE,
-  names_are_headers = TRUE,
   numbered = TRUE,
   special_left = TRUE
 )
@@ -41,14 +40,9 @@ tabtex(
 
 \item{long_negatives}{A logical value indicating whether negative signs preceding numbers in cells should be converted to mathematical negative signs ("$-$") in the LaTeX output.}
 
-\item{names_are_headers}{A logical value indicating whether the data frame's column names should be used as column headers (\code{TRUE}) or if the first row contains the headers instead (\code{FALSE}).}
-
 \item{numbered}{A logical value indicating whether the table should be numbered in LaTeX (if \code{TRUE}, uses the \code{table} environment; if \code{FALSE}, uses the \verb{table*} environment instead).}
 
 \item{special_left}{A logical value indicating whether the leftmost column should be formatted separately from the other columns (\code{TRUE} by default).}
-}
-\value{
-If no value for \code{out} is specified, returns the character string of the table in LaTeX form
 }
 \description{
 Format and generate a LaTeX-formatted table from a data frame

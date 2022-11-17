@@ -11,7 +11,6 @@
 #' @param note_width A character string that specifies the width of the note. By default, the note will be the same width as the table itself (specified with `width`).
 #' @param note_label A character string containing the label preceding the note. By default, "Note:" in italics (\textit{Note:}).
 #' @param long_negatives A logical value indicating whether negative signs preceding numbers in cells should be converted to mathematical negative signs ("$-$") in the LaTeX output.
-#' @param names_are_headers A logical value indicating whether the data frame's column names should be used as column headers (`TRUE`) or if the first row contains the headers instead (`FALSE`).
 #' @param numbered A logical value indicating whether the table should be numbered in LaTeX (if `TRUE`, uses the `table` environment; if `FALSE`, uses the `table*` environment instead).
 #' @param special_left A logical value indicating whether the leftmost column should be formatted separately from the other columns (`TRUE` by default).
 #'
@@ -40,15 +39,14 @@
 
 tabtex <- function(.data, 
                    out,
-                   title = "", 
-                   label = "",
+                   title, 
+                   label,
                    width = "0.8\\linewidth",
                    position = "!htbp",
-                   note = "",
-                   note_width = "table",
-                   note_label = "\\textit{Note:} ",
+                   note,
+                   note_width,
+                   note_label = TRUE,
                    long_negatives = TRUE,
-                   names_are_headers = TRUE,
                    numbered = TRUE,
                    special_left = TRUE) {
   
@@ -59,19 +57,34 @@ tabtex <- function(.data,
   localStrings["table_width"] <- width
   localStrings["table_pos"] <- position
   localStrings["table_note"] <- note
-  localStrings["note_start"] <- note_label
   
-  if (note_width == "table") {
+  if (missing(note_width)) {
     localStrings["note_width"] <- width
   } else {
     localStrings["note_width"] <- note_width
   }
   
+  if (!missing(note) & note_label) {
+    localStrings["note_start"] <- "\\textit{Note:}"
+  } else {
+    localStrings["note_start"] <- ""
+  }
+  
   ## Build table
   if (numbered) {
-    table <- "\\begin{table}[$table_pos]\n\\centering\n\\caption{$table_caption}\n\\label{$table_label}"
+    table <- "\\begin{table}[$table_pos]\n\\centering\n"
   } else {
-    table <- "\\begin{table*}[$table_pos]\n\\centering\n\\caption{$table_caption}\n\\label{$table_label}"
+    table <- "\\begin{table*}[$table_pos]\n\\centering\n"
+  }
+  
+  # Add table caption (only if requested)
+  if (!missing(title)) {
+    table <- paste0(table, "\\caption{$table_caption}\n")
+  }
+  
+  # Add the label (only if requested)
+  if (!missing(label)) {
+    table <- paste0(table, "\\label{$table_label}")
   }
   
   # Add tabular call
@@ -87,11 +100,11 @@ tabtex <- function(.data,
   # Add hlines between title (caption) and actual content from data frame
   table <- paste0(table, "\n", "\\hline\\hline")
   
-  # Fix data frame formatting so that data frame names are the column headers
-  if (!names_are_headers) {
-    names(.data) <- as.vector(.data[1, ])
-    .data <- .data[2:nrow(.data), ]
-  }
+  # TK return to this to deal with what happens if (a) a character vector is passed for column headers or (b) a named character vector is passed
+  # if (!names_are_headers) {
+  #   names(.data) <- as.vector(.data[1, ])
+  #   .data <- .data[2:nrow(.data), ]
+  # }
   
   # Add column headers
   table <- paste0(table, "\n",
@@ -113,8 +126,10 @@ tabtex <- function(.data,
   # Add two horizontal lines at end of table and close the tabular
   table <- paste0(table, "\n\\hline\\hline\n\\end{tabular*}")
   
-  # Add note
-  table <- paste0(table, "\n\\begin{minipage}{$note_width}\n$note_start$table_note\n\\end{minipage}")
+  # Add note (only if note is requested)
+  if (!missing(note)) {
+    table <- paste0(table, "\n\\begin{minipage}{$note_width}\n$note_start$table_note\n\\end{minipage}")
+  }
   
   # Close table environment
   if (numbered) {
@@ -134,7 +149,10 @@ tabtex <- function(.data,
   }
   
   if (missing(out)) {
-    print(table)
+    table
+  } else if (tools::file_ext(out) != "tex") {
+    # Fix file extension if not being saved as a .tex file
+    write(table, file = paste0(tools::file_path_sans_ext(out), ".tex"))
   } else {
     write(table, file = out)
   }
