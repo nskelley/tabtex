@@ -18,7 +18,8 @@ tabtex(
   blank_headings = TRUE,
   long_negatives = TRUE,
   numbered = TRUE,
-  special_left = TRUE
+  special_left = TRUE,
+  suppress_savemsg = FALSE
 )
 }
 \arguments{
@@ -30,7 +31,7 @@ tabtex(
 
 \item{label}{A character string that specifies the LaTeX label (e.g., "tab:table1") for the table to be used in LaTeX references.}
 
-\item{width}{A character string specifying the width of the table (by default, 0.8\linewidth, 80\% of the line width).}
+\item{width}{A character string specifying the width of the table (by default, 0.8\\linewidth, 80\% of the line width).}
 
 \item{position}{A character string containing only elements of "h", "t", "b", "p", and "!" that dictate where the table is placed in the LaTeX document.}
 
@@ -49,6 +50,8 @@ tabtex(
 \item{numbered}{A logical value indicating whether the table should be numbered in LaTeX (if \code{TRUE}, uses the \code{table} environment; if \code{FALSE}, uses the \verb{table*} environment instead).}
 
 \item{special_left}{A logical value indicating whether the leftmost column should be formatted separately from the other columns (\code{TRUE} by default).}
+
+\item{suppress_savemsg}{A logical value for whether to suppress the message that confirms (a) that the table was saved and (b) the absolute filepath of that save.}
 }
 \description{
 Format and generate a LaTeX-formatted table from a data frame
