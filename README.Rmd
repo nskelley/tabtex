@@ -1,8 +1,13 @@
-tabtex
-================
+---
+title: "tabtex"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
 
 <!-- badges: start -->
-
 [![Lifecycle:experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
@@ -10,7 +15,7 @@ tabtex
 
 ## Installation
 
-``` r
+```{r}
 # Install the most recent version of tabtex from GitHub:
 install.packages("devtools")
 devtools::install_github("nskelley/tabtex")
@@ -20,13 +25,14 @@ devtools::install_github("nskelley/tabtex")
 
 Once it’s installed, you can load tabtex with `library(tabtex)`.
 
-``` r
+```{r}
 library(tabtex)
 library(dplyr)
 library(tidyr)
 ```
 
-``` r
+
+```{r}
 starwars_homeworlds <- starwars %>%
   filter(!is.na(homeworld) & !is.na(species)) %>%
   group_by(homeworld, species) %>%
@@ -50,7 +56,7 @@ starwars_homeworlds
 ## 5 Gungan            0         0      0     3        0
 ```
 
-``` r
+```{r}
 # this is a mess
 tabtex(starwars_homeworlds, title = "Species Frequencies by Homeworld", 
        note = "Restricted to homeworlds with at least three characters.")

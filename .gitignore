@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 **.DS_STORE
-*.Rmd
 demo_code/*
+**.Rbuildignore
