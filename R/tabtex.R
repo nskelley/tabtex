@@ -5,7 +5,7 @@
 #' @param out A character string that specifies the path of the output tex file.
 #' @param title A character string that specifies the title for the table.
 #' @param label A character string that specifies the LaTeX label (e.g., "tab:table1") for the table to be used in LaTeX references.
-#' @param width A character string specifying the width of the table (by default, 0.8\linewidth, 80% of the line width).
+#' @param width A character string specifying the width of the table (by default, 0.8\\linewidth, 80% of the line width).
 #' @param position A character string containing only elements of "h", "t", "b", "p", and "!" that dictate where the table is placed in the LaTeX document.
 #' @param note A character string containing the note to place underneath the table.
 #' @param note_width A character string that specifies the width of the note. By default, the note will be the same width as the table itself (specified with `width`).
@@ -15,6 +15,7 @@
 #' @param long_negatives A logical value indicating whether negative signs preceding numbers in cells should be converted to mathematical negative signs ("$-$") in the LaTeX output.
 #' @param numbered A logical value indicating whether the table should be numbered in LaTeX (if `TRUE`, uses the `table` environment; if `FALSE`, uses the `table*` environment instead).
 #' @param special_left A logical value indicating whether the leftmost column should be formatted separately from the other columns (`TRUE` by default).
+#' @param suppress_savemsg A logical value for whether to suppress the message that confirms (a) that the table was saved and (b) the absolute filepath of that save.
 #'
 #' @export
 #'
@@ -52,15 +53,16 @@ tabtex <- function(.data,
                    blank_headings = TRUE,
                    long_negatives = TRUE,
                    numbered = TRUE,
-                   special_left = TRUE) {
+                   special_left = TRUE,
+                   suppress_savemsg = FALSE) {
   
   ## Define local strings
   localStrings <- c()
-  localStrings["table_caption"] <- title
-  localStrings["table_label"] <- label
+  localStrings["table_caption"] <- ifelse(missing(title), "", title)
+  localStrings["table_label"] <- ifelse(missing(label), "", label)
   localStrings["table_width"] <- width
   localStrings["table_pos"] <- position
-  localStrings["table_note"] <- note
+  localStrings["table_note"] <- ifelse(missing(note), "", note)
   
   if (missing(note_width)) {
     localStrings["note_width"] <- width
@@ -171,11 +173,20 @@ tabtex <- function(.data,
   }
   
   if (missing(out)) {
-    table
-  } else if (tools::file_ext(out) != "tex") {
+    message(table)
+  } else if (!(tools::file_ext(out) %in% c("tex", ""))) {
     # Fix file extension if not being saved as a .tex file
-    write(table, file = paste0(tools::file_path_sans_ext(out), ".tex"))
+    fixed_filename <- paste0(tools::file_path_sans_ext(out), ".tex")
+    warning(paste0("Extension ", tools::file_ext(out), 
+                   " is not valid. Saving as ", fixed_filename, " instead."))
+    write(table, file = fixed_filename)
+  } else if (tools::file_ext(out) == "") {
+    write(table, file = paste0(out, ".tex"))
   } else {
     write(table, file = out)
+  }
+  
+  if (!missing(out) & !suppress_savemsg) {
+    message(paste0("Table saved as ", tools::file_path_as_absolute(out)))
   }
 }
