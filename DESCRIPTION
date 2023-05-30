@@ -1,6 +1,6 @@
 Package: tabtex
 Title: tabtex: Format Data Frames As LaTeX-Formatted Tables
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: 
     person("Nicholas", "Skelley", , "nskelley@mit.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6524-014X"))
