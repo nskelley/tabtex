@@ -7,6 +7,7 @@
 #' @param label A character string that specifies the LaTeX label (e.g., "tab:table1") for the table to be used in LaTeX references.
 #' @param width A character string specifying the width of the table (by default, 0.8\\linewidth, 80% of the line width).
 #' @param position A character string containing only elements of "h", "t", "b", "p", and "!" that dictate where the table is placed in the LaTeX document.
+#' @param digits A non-negative integer value of the desired number of digits to show after the decimal in the table.
 #' @param note A character string containing the note to place underneath the table.
 #' @param note_width A character string that specifies the width of the note. By default, the note will be the same width as the table itself (specified with `width`).
 #' @param note_label A logical value that specifies whether the table note should be preceded by "Note:" in italics, when applicable.
@@ -46,6 +47,7 @@ tabtex <- function(.data,
                    label,
                    width = "0.8\\linewidth",
                    position = "!htbp",
+                   digits = 3,
                    note,
                    note_width,
                    note_label = TRUE,
@@ -71,9 +73,21 @@ tabtex <- function(.data,
   }
   
   if (!missing(note) & note_label) {
-    localStrings["note_start"] <- "\\textit{Note:}"
+    localStrings["note_start"] <- "\\textit{Note: }"
   } else {
     localStrings["note_start"] <- ""
+  }
+  
+  ## Transform data for digits (when applicable)
+  if (!missing(digits) & as.integer(digits) == digits) {
+    digitized.cols <- lapply(.data, function(col) {
+      if (is.numeric(col) & digits >= 0) {
+        return(format(round(col, digits = digits), nsmall = digits))
+      } else {
+        return(col)
+      }
+    })
+    .data <- do.call(cbind, digitized.cols)
   }
   
   ## Build table
@@ -169,11 +183,12 @@ tabtex <- function(.data,
   
   # Fix negative numbers
   if (long_negatives) {
-    table <- gsub("-[^0-9]*", "$-$", table)
+    table <- gsub("-(?=\\d)", "$-$", table, perl = TRUE)
   }
   
   if (missing(out)) {
     message(table)
+    table
   } else if (!(tools::file_ext(out) %in% c("tex", ""))) {
     # Fix file extension if not being saved as a .tex file
     fixed_filename <- paste0(tools::file_path_sans_ext(out), ".tex")
