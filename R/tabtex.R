@@ -9,6 +9,7 @@
 #' @param position A character string containing only elements of "h", "t", "b", "p", and "!" that dictate where the table is placed in the LaTeX document.
 #' @param digits A non-negative integer value of the desired number of digits to show after the decimal in the table.
 #' @param note A character string containing the note to place underneath the table.
+#' @param note_size The (LaTeX) font size for the note. "footnotesize" (default), "textnormal", "large", "Large", "small", "tiny", and all other sizes recognized by LaTeX are acceptable string inputs.
 #' @param note_width A character string that specifies the width of the note. By default, the note will be the same width as the table itself (specified with `width`).
 #' @param note_label A logical value that specifies whether the table note should be preceded by "Note:" in italics, when applicable.
 #' @param headings A character vector that specifies the column headers for the table. When not specified, the data frame's column names will be used instead. When a named character vector, column headers will be the values of the vector whose names correspond to a column name in the original data frame. When a column from the data frame is not represented in the named character vector, the column header will be blank, unless `blank_headings` is changed to `FALSE`
@@ -50,6 +51,7 @@ tabtex <- function(.data,
                    digits = 3,
                    note,
                    note_width,
+                   note_size = "footnotesize",
                    note_label = TRUE,
                    headings,
                    blank_headings = TRUE,
@@ -166,7 +168,8 @@ tabtex <- function(.data,
   
   # Add note (only if note is requested)
   if (!missing(note)) {
-    table <- paste0(table, "\n\\begin{minipage}{$note_width}\n$note_start$table_note\n\\end{minipage}")
+    table <- paste0(table, "\n\\begin{minipage}{$note_width}\\", note_size, 
+                    "\n$note_start$table_note\n\\end{minipage}")
   }
   
   # Close table environment
@@ -188,7 +191,7 @@ tabtex <- function(.data,
   
   if (missing(out)) {
     message(table)
-    table
+    return(table)
   } else if (!(tools::file_ext(out) %in% c("tex", ""))) {
     # Fix file extension if not being saved as a .tex file
     fixed_filename <- paste0(tools::file_path_sans_ext(out), ".tex")

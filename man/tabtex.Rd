@@ -14,6 +14,7 @@ tabtex(
   digits = 3,
   note,
   note_width,
+  note_size = "footnotesize",
   note_label = TRUE,
   headings,
   blank_headings = TRUE,
@@ -41,6 +42,8 @@ tabtex(
 \item{note}{A character string containing the note to place underneath the table.}
 
 \item{note_width}{A character string that specifies the width of the note. By default, the note will be the same width as the table itself (specified with \code{width}).}
+
+\item{note_size}{The (LaTeX) font size for the note. "footnotesize" (default), "textnormal", "large", "Large", "small", "tiny", and all other sizes recognized by LaTeX are acceptable string inputs.}
 
 \item{note_label}{A logical value that specifies whether the table note should be preceded by "Note:" in italics, when applicable.}
 
