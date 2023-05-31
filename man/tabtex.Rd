@@ -11,6 +11,7 @@ tabtex(
   label,
   width = "0.8\\\\linewidth",
   position = "!htbp",
+  digits = 3,
   note,
   note_width,
   note_label = TRUE,
@@ -34,6 +35,8 @@ tabtex(
 \item{width}{A character string specifying the width of the table (by default, 0.8\\linewidth, 80\% of the line width).}
 
 \item{position}{A character string containing only elements of "h", "t", "b", "p", and "!" that dictate where the table is placed in the LaTeX document.}
+
+\item{digits}{A non-negative integer value of the desired number of digits to show after the decimal in the table.}
 
 \item{note}{A character string containing the note to place underneath the table.}
 
