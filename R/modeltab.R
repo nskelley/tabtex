@@ -97,7 +97,7 @@ modeltab <- function(...,
     p_raw <- summary(model)$coefficients[, "Pr(>|t|)"]
     p_est <- data.frame(var = names(p_raw), p_est = unname(p_raw))
     # CI estimates
-    if (aux == "ci" & ci_mult >= 100 | ci_mult <= 0) {
+    if (aux == "ci" & conf_level >= 100 | conf_level <= 0) {
       stop("Invalid confidence level. Use a number in (0, 100).")
     }
     ci_mult <- qnorm((1 - conf_level / 100) / 2)
