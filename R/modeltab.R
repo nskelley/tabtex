@@ -4,7 +4,7 @@
 #' @param main A character string indicating the main estimate to be shown in the data frame. By default, the point estimate. See `aux` for alternative estimates (`"ci"` cannot be used as the main estimate).
 #' @param aux A character string indicating the secondary estimate to be shown in the row beneath the main estimate. By default, the standard error of the coefficient (`"se"`). Use `"t"` for the t-statistics, `"p"` for the p-value, or `"ci"` for the confidence interval instead of `"se"` if desired.
 #' @param add_stats A character vector indicating model-level statistics to add to the end (last rows) of the table. Possible values are `"n"` (number of observations), `"df"` (degrees of freedom), `"rsq"` (R-squared), `"arsq"` (adjusted R-squared), `"rss"` (residual sum of squares), `"mse"` (mean squared error), and `"f"` (F-statistic). Name the values (e.g., `c("Degrees of freedom" = "df")`) to change the row's label (leftmost cell).
-#' @param conf_level When `aux = "ci"`, a number in the range (0, 100) indicating the confidence level to be used in calculating the confidence interval. By default 95 (for a 95% confidence interval).
+#' @param conf_level When `aux = "ci"`, a number in the range (0, 1) indicating the confidence level to be used in calculating the confidence interval. By default 0.95 (for a 95% confidence interval).
 #'
 #' @return A data frame with the specified regression summary estimates.
 #' @export
@@ -13,14 +13,15 @@ modeltab <- function(...,
                      main = "b",
                      aux = "se",
                      add_stats = c("n", "df", "rsq"),
-                     conf_level = 95) {
+                     conf_level = 0.95) {
   all_models <- list(...)
-  if (class(all_models[[1]]) == "list") {
-    warning("List passed to function where models should be. Using first element of list.")
+  
+  if (length(all_models) == 1 & is.list(all_models[[1]]) &  all(sapply(all_models[[1]], inherits, "lm"))) {
     all_models <- all_models[[1]]
-  } else if (class(all_models[[1]]) %in% c("character", "numeric")) {
-    warning("Vector passed to function where models should be. Using first element of vector.")
-    all_models <- as.list(all_models[[1]])
+  }
+  
+  if (!all(sapply(all_models, inherits, "lm"))) {
+    stop("All inputs must be `lm` or `glm` objects (or a list of `lm` or `glm` objects).")
   }
   
   # Identify all rows at the start/before getting to individual models
@@ -82,8 +83,6 @@ modeltab <- function(...,
     # --------------------------------------------------------------------------
     # Covariate-level estimates (for main and aux)
     
-    vars <- c("(Intercept)", "lifeExp", "gdpPercap") # tk delete this line
-    
     # Point estimates
     b_est <- data.frame(var = names(model$coefficients),
                         b_est = unname(model$coefficients))
@@ -97,18 +96,24 @@ modeltab <- function(...,
     p_raw <- summary(model)$coefficients[, "Pr(>|t|)"]
     p_est <- data.frame(var = names(p_raw), p_est = unname(p_raw))
     # CI estimates
-    if (aux == "ci" & conf_level >= 100 | conf_level <= 0) {
-      stop("Invalid confidence level. Use a number in (0, 100).")
+    if (aux == "ci") {
+      if (conf_level >= 1 | conf_level <= 0) {
+        stop("Invalid confidence level. Use a number in (0, 1).")
+      }
+      ci_raw <- stats::confint(model, level = conf_level)
+      ci_est <- data.frame(
+        var = rownames(ci_raw),
+        ci_lower = ci_raw[, 1],
+        ci_upper = ci_raw[, 2],
+        row.names = NULL
+      )
+    } else {
+      ci_est <- NULL
     }
-    ci_mult <- qnorm((1 - conf_level / 100) / 2)
-    ci_est <- merge(b_est, se_est, by = "var")
-    ci_est$ci_lower <- ci_est$b_est - (ci_mult * ci_est$se_est)
-    ci_est$ci_upper <- ci_est$b_est + (ci_mult * ci_est$se_est)
-    ci_est[, c("b_est", "se_est")] <- NULL
-    
     # Merge the covariate-level estimates into one data frame
     model_est <- Reduce(function(x, y) merge(x, y, by = "var"), 
-                        list(b_est, se_est, t_est, p_est, ci_est))
+                        Filter(Negate(is.null), list(b_est, se_est, t_est, 
+                                                     p_est, ci_est)))
     rm(b_est, se_est, t_est, p_est, ci_est)
     
     

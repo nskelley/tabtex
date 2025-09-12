@@ -24,7 +24,7 @@
 #' @examples
 #' # create a LaTeX-formatted table to display the mtcars dataset
 #' tabtex(mtcars)
-#'
+#' 
 #' # reformat the mtcars dataset and save it as a LaTeX table
 #' mtcars
 #' cars <- mtcars[, c("mpg", "hp", "wt", "am")]
@@ -32,15 +32,26 @@
 #' cars$am[cars$am == 0] <- "Automatic"
 #' names(cars) <- c("MPG", "Horsepower", "Weight (1000 lbs)", "Transmission")
 #' 
+#' \dontshow{
+#' tabtex(cars, out = tempfile(fileext = ".tex"))
+#' }
+#' \dontrun{
 #' tabtex(cars, out = "simple_cars.tex")
+#' }
 #' 
 #' # do similar reformatting with dplyr but add a note specifying that weight is in 1000s of pounds
-#' library(dplyr)
-#' 
-#' cars <- mtcars %>%
-#'   mutate(am = ifelse(am == 1, "Manual", "Automatic")) %>%
-#'   select("MPG" = mpg, "Horsepower" = hp, "Weight" = wt, "Transmission" = am) %>%
+#' \dontshow{
+#' cars <- mtcars |>
+#'   dplyr::mutate(am = ifelse(am == 1, "Manual", "Automatic")) |>
+#'   dplyr::select("MPG" = mpg, "Horsepower" = hp, "Weight" = wt, "Transmission" = am) |>
+#'   tabtex(out = tempfile(fileext = ".tex"), note = "Weight is measured in thousands of pounds.")
+#' }
+#' \dontrun{
+#' cars <- mtcars |>
+#'   dplyr::mutate(am = ifelse(am == 1, "Manual", "Automatic")) |>
+#'   dplyr::select("MPG" = mpg, "Horsepower" = hp, "Weight" = wt, "Transmission" = am) |>
 #'   tabtex(out = "dplyr_cars.tex", note = "Weight is measured in thousands of pounds.")
+#' }
 
 tabtex <- function(.data, 
                    out,
