@@ -9,7 +9,7 @@ modeltab(
   main = "b",
   aux = "se",
   add_stats = c("n", "df", "rsq"),
-  conf_level = 95
+  conf_level = 0.95
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ modeltab(
 
 \item{add_stats}{A character vector indicating model-level statistics to add to the end (last rows) of the table. Possible values are \code{"n"} (number of observations), \code{"df"} (degrees of freedom), \code{"rsq"} (R-squared), \code{"arsq"} (adjusted R-squared), \code{"rss"} (residual sum of squares), \code{"mse"} (mean squared error), and \code{"f"} (F-statistic). Name the values (e.g., \code{c("Degrees of freedom" = "df")}) to change the row's label (leftmost cell).}
 
-\item{conf_level}{When \code{aux = "ci"}, a number in the range (0, 100) indicating the confidence level to be used in calculating the confidence interval. By default 95 (for a 95\% confidence interval).}
+\item{conf_level}{When \code{aux = "ci"}, a number in the range (0, 1) indicating the confidence level to be used in calculating the confidence interval. By default 0.95 (for a 95\% confidence interval).}
 }
 \value{
 A data frame with the specified regression summary estimates.
