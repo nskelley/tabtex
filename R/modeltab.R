@@ -1,10 +1,22 @@
 #' Format regression estimates in a data frame
 #'
+#' @description
+#' \lifecycle{deprecated}
+#' 
+#' This function is deprecated and will be rewritten in a future version.
+#' Support for this function is temporarily suspended while a new implementation
+#' is being developed.
+#'
 #' @param ... Regression models (the results of `lm()`) to be made into a data frame.
 #' @param main A character string indicating the main estimate to be shown in the data frame. By default, the point estimate. See `aux` for alternative estimates (`"ci"` cannot be used as the main estimate).
 #' @param aux A character string indicating the secondary estimate to be shown in the row beneath the main estimate. By default, the standard error of the coefficient (`"se"`). Use `"t"` for the t-statistics, `"p"` for the p-value, or `"ci"` for the confidence interval instead of `"se"` if desired.
 #' @param add_stats A character vector indicating model-level statistics to add to the end (last rows) of the table. Possible values are `"n"` (number of observations), `"df"` (degrees of freedom), `"rsq"` (R-squared), `"arsq"` (adjusted R-squared), `"rss"` (residual sum of squares), `"mse"` (mean squared error), and `"f"` (F-statistic). Name the values (e.g., `c("Degrees of freedom" = "df")`) to change the row's label (leftmost cell).
 #' @param conf_level When `aux = "ci"`, a number in the range (0, 1) indicating the confidence level to be used in calculating the confidence interval. By default 0.95 (for a 95% confidence interval).
+#'
+#' @details
+#' `modeltab()` was deprecated in version 0.0.7. This function is being
+#' rewritten and will be reintroduced in a future version with an improved
+#' implementation.
 #'
 #' @return A data frame with the specified regression summary estimates.
 #' @export
@@ -14,6 +26,10 @@ modeltab <- function(...,
                      aux = "se",
                      add_stats = c("n", "df", "rsq"),
                      conf_level = 0.95) {
+  .Deprecated(
+    msg = "modeltab() is deprecated and temporarily unsupported. It will be reintroduced in a future version with an improved implementation."
+  )
+  
   all_models <- list(...)
   
   if (length(all_models) == 1 & is.list(all_models[[1]]) &  all(sapply(all_models[[1]], inherits, "lm"))) {
