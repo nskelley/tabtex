@@ -3,3 +3,4 @@
 export(modeltab)
 export(tabdown)
 export(tabtex)
+export(tabtex_legacy)

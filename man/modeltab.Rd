@@ -27,5 +27,14 @@ modeltab(
 A data frame with the specified regression summary estimates.
 }
 \description{
-Format regression estimates in a data frame
+\lifecycle{deprecated}
+
+This function is deprecated and will be rewritten in a future version.
+Support for this function is temporarily suspended while a new implementation
+is being developed.
+}
+\details{
+\code{modeltab()} was deprecated in version 0.0.7. This function is being
+rewritten and will be reintroduced in a future version with an improved
+implementation.
 }

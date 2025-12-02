@@ -6,22 +6,11 @@
 \usage{
 tabtex(
   .data,
-  out,
-  title,
-  label,
-  width = "0.8\\\\linewidth",
-  position = "!htbp",
-  digits = 3,
-  note,
-  note_width,
-  note_size = "footnotesize",
-  note_label = TRUE,
+  out = NULL,
+  digits = 3L,
   headings,
-  blank_headings = TRUE,
-  long_negatives = TRUE,
-  numbered = TRUE,
-  special_left = TRUE,
-  suppress_savemsg = FALSE
+  blank_headings = FALSE,
+  special_left = TRUE
 )
 }
 \arguments{
@@ -29,68 +18,17 @@ tabtex(
 
 \item{out}{A character string that specifies the path of the output tex file.}
 
-\item{title}{A character string that specifies the title for the table.}
-
-\item{label}{A character string that specifies the LaTeX label (e.g., "tab:table1") for the table to be used in LaTeX references.}
-
-\item{width}{A character string specifying the width of the table (by default, 0.8\\linewidth, 80\% of the line width).}
-
-\item{position}{A character string containing only elements of "h", "t", "b", "p", and "!" that dictate where the table is placed in the LaTeX document.}
-
 \item{digits}{A non-negative integer value of the desired number of digits to show after the decimal in the table.}
 
-\item{note}{A character string containing the note to place underneath the table.}
+\item{headings}{A character vector that specifies the column headers for the table. When not specified, the data frame's column names will be used instead. When a named character vector, column headers will be the values of the vector whose names correspond to a column name in the original data frame.}
 
-\item{note_width}{A character string that specifies the width of the note. By default, the note will be the same width as the table itself (specified with \code{width}).}
-
-\item{note_size}{The (LaTeX) font size for the note. "footnotesize" (default), "textnormal", "large", "Large", "small", "tiny", and all other sizes recognized by LaTeX are acceptable string inputs.}
-
-\item{note_label}{A logical value that specifies whether the table note should be preceded by "Note:" in italics, when applicable.}
-
-\item{headings}{A character vector that specifies the column headers for the table. When not specified, the data frame's column names will be used instead. When a named character vector, column headers will be the values of the vector whose names correspond to a column name in the original data frame. When a column from the data frame is not represented in the named character vector, the column header will be blank, unless \code{blank_headings} is changed to \code{FALSE}}
-
-\item{blank_headings}{A logical value dictating whether column headers can be empty. If \code{TRUE}, columns left unspecified by the character vector passed as \code{headings} are blank. If \code{FALSE}, unspecified column headers are filled using the original data frame's column names.}
-
-\item{long_negatives}{A logical value indicating whether negative signs preceding numbers in cells should be converted to mathematical negative signs ("$-$") in the LaTeX output.}
-
-\item{numbered}{A logical value indicating whether the table should be numbered in LaTeX (if \code{TRUE}, uses the \code{table} environment; if \code{FALSE}, uses the \verb{table*} environment instead).}
+\item{blank_headings}{A logical value dictating whether column headers can be empty.}
 
 \item{special_left}{A logical value indicating whether the leftmost column should be formatted separately from the other columns (\code{TRUE} by default).}
-
-\item{suppress_savemsg}{A logical value for whether to suppress the message that confirms (a) that the table was saved and (b) the absolute filepath of that save.}
+}
+\value{
+A character string containing LaTeX-formatted table code, or writes to file if \code{out} is specified.
 }
 \description{
 Format and generate a LaTeX-formatted table from a data frame
-}
-\examples{
-# create a LaTeX-formatted table to display the mtcars dataset
-tabtex(mtcars)
-
-# reformat the mtcars dataset and save it as a LaTeX table
-mtcars
-cars <- mtcars[, c("mpg", "hp", "wt", "am")]
-cars$am[cars$am == 1] <- "Manual"
-cars$am[cars$am == 0] <- "Automatic"
-names(cars) <- c("MPG", "Horsepower", "Weight (1000 lbs)", "Transmission")
-
-\dontshow{
-tabtex(cars, out = tempfile(fileext = ".tex"))
-}
-\dontrun{
-tabtex(cars, out = "simple_cars.tex")
-}
-
-# do similar reformatting with dplyr but add a note specifying that weight is in 1000s of pounds
-\dontshow{
-cars <- mtcars |>
-  dplyr::mutate(am = ifelse(am == 1, "Manual", "Automatic")) |>
-  dplyr::select("MPG" = mpg, "Horsepower" = hp, "Weight" = wt, "Transmission" = am) |>
-  tabtex(out = tempfile(fileext = ".tex"), note = "Weight is measured in thousands of pounds.")
-}
-\dontrun{
-cars <- mtcars |>
-  dplyr::mutate(am = ifelse(am == 1, "Manual", "Automatic")) |>
-  dplyr::select("MPG" = mpg, "Horsepower" = hp, "Weight" = wt, "Transmission" = am) |>
-  tabtex(out = "dplyr_cars.tex", note = "Weight is measured in thousands of pounds.")
-}
 }

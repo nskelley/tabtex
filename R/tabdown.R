@@ -1,10 +1,22 @@
 #' Format and generate a Markdown-formatted table from a data frame
 #'
+#' @description
+#' \lifecycle{deprecated}
+#' 
+#' This function is deprecated and will be rewritten in a future version.
+#' Support for this function is temporarily suspended while a new implementation
+#' is being developed.
+#'
 #' @param .data A data frame or data frame extension (e.g., a tibble).
 #' @param out A character string that specifies the path of the output .Md file. If missing (default), the result is merely printed to the console.
 #' @param headings A character vector that specifies the column headers for the table. When not specified, the data frame's column names will be used instead. When a named character vector, column headers will be the values of the vector whose names correspond to a column name in the original data frame. When a column from the data frame is not represented in the named character vector, the column header will be blank, unless `blank_headings` is changed to `FALSE`
 #' @param blank_headings A logical value dictating whether column headers can be empty. If `TRUE`, columns left unspecified by the character vector passed as `headings` are blank. If `FALSE`, unspecified column headers are filled using the original data frame's column names.
 #' @param suppress_savemsg A logical value for whether to suppress the message that confirms (a) that the table was saved and (b) the absolute filepath of that save.
+#'
+#' @details
+#' `tabdown()` was deprecated in version 0.0.7. This function is being
+#' rewritten and will be reintroduced in a future version with an improved
+#' implementation.
 #'
 #' @export
 
@@ -13,6 +25,10 @@ tabdown <- function(.data,
                    headings,
                    blank_headings = TRUE,
                    suppress_savemsg = FALSE) {
+  .Deprecated(
+    msg = "tabdown() is deprecated and temporarily unsupported. It will be reintroduced in a future version with an improved implementation."
+  )
+  
   # Column headers
   headingsToUse <- vector(mode = "character", length = ncol(.data))
   

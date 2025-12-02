@@ -18,5 +18,14 @@ tabdown(.data, out, headings, blank_headings = TRUE, suppress_savemsg = FALSE)
 \item{suppress_savemsg}{A logical value for whether to suppress the message that confirms (a) that the table was saved and (b) the absolute filepath of that save.}
 }
 \description{
-Format and generate a Markdown-formatted table from a data frame
+\lifecycle{deprecated}
+
+This function is deprecated and will be rewritten in a future version.
+Support for this function is temporarily suspended while a new implementation
+is being developed.
+}
+\details{
+\code{tabdown()} was deprecated in version 0.0.7. This function is being
+rewritten and will be reintroduced in a future version with an improved
+implementation.
 }
